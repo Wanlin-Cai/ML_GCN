@@ -1,0 +1,11 @@
+{
+  "lr": 1e-4,
+  "weight_decay": 0.0000001,
+  "patience": 50,
+  "batch_size": 16,
+  "node_out_feats": 32,
+  "edge_hidden_feats": 64,
+  "num_step_message_passing": 6,
+  "num_step_set2set": 6,
+  "num_layer_set2set": 3
+}

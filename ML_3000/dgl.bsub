@@ -1,0 +1,33 @@
+#!/bin/bash
+
+#BSUB -q q16cores
+#BSUB -J dgl
+#BSUB -o ml.%J.stdout
+#BSUB -e ml.%J.stderr
+#BSUB -n 16
+#BSUB -R "span[ptile=32]"
+
+INPUT_FILE=
+
+# add modulefiles
+echo ------------------------
+echo Job begins at `date`
+echo ------------------------
+
+echo job runs at the following node:
+echo $LSB_HOSTS 
+NP=$(echo $LSB_HOSTS | awk '{print NF}')
+echo ""
+echo Number of processor: $NP
+echo ""
+
+#export I_MPI_DEBUG=5
+export OMP_NUM_THREADS=16
+export MKL_NUM_THREADS=16
+ulimit -s unlimited
+
+python regression_train.py -c 5000est.csv -sc smiles -s random -ne 128
+
+echo ------------------------
+echo Job terminates at `date`
+echo ------------------------

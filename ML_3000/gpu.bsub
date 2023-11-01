@@ -1,0 +1,50 @@
+#!/bin/bash
+#BSUB -q gpu
+#BSUB -J ml_gpu
+#BSUB -o ml_gpu.o-%J
+#BSUB -e ml_gpu.e-%J
+#BSUB -n 4
+#BSUB -R "span[ptile=28]"
+#BSUB -R "rusage[ngpus_shared=1]"
+#BSUB -m g004
+#CUDA_VISIBLE_DEVICES=3
+export CUDA_VISIBLE_DEVICES=2
+
+
+
+
+# std, ncl or gam for CPU
+# gpu or gpu_ncl for GPU
+module load cuda/9.2
+
+echo ------------------------
+echo Job begins at `date`
+echo ------------------------
+
+echo job runs at the following node:
+echo $LSB_HOSTS 
+NP=$(echo $LSB_HOSTS | awk '{print NF}')
+echo ""
+echo Number of processor: $NP
+echo ""
+ 
+#---> Environment Setting <----
+
+
+export OMP_NUM_THREADS=1
+ 
+#ulimit -d unlimited
+#ulimit -m unlimited
+ulimit -s unlimited
+
+
+# Run VASP
+
+python regression_train.py -c 5000reorg.csv -sc smiles -s random
+#python regression_train.py -c 3000ev4.csv -sc smiles -mo MPNN -ne 50
+#python regression_train.py -c 3000ev10.csv -sc smiles -mo AttentiveFP -a attentivefp -b attentivefp -ne 50
+echo ------------------------
+echo Job terminates at `date`
+echo ------------------------
+
+
